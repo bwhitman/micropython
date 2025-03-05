@@ -369,8 +369,10 @@ static mp_obj_t machine_sdcard_readblocks(mp_obj_t self_in, mp_obj_t block_num, 
 
     mp_get_buffer_raise(buf, &bufinfo, MP_BUFFER_WRITE);
     err = sdmmc_read_sectors(&(self->card), bufinfo.buf, mp_obj_get_int(block_num), bufinfo.len / _SECTOR_SIZE(self));
-
-    return mp_obj_new_bool(err == ESP_OK);
+    if(err == ESP_OK) {
+        return mp_const_none;
+    }
+    return mp_const_false;
 }
 static MP_DEFINE_CONST_FUN_OBJ_3(machine_sdcard_readblocks_obj, machine_sdcard_readblocks);
 
